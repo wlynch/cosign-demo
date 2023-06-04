@@ -7,12 +7,16 @@ jobs:
       contents: read
       id-token: write # needed for signing the images with GitHub OIDC Token
 
-    name: Install Cosign and test presence in path
+    name: Build and sign
     steps:
       - uses: actions/checkout@master
       - name: Install Cosign
         uses: sigstore/cosign-installer@main
       - uses: ko-build/setup-ko@v0.6
-      - run: ko build
+      - id: build
         env:
           KO_DOCKER_REPO: ttl.sh/wlynch/demo
+        run: |
+          IMAGE=$(ko build)
+          echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
+      - run: cosign sign ${{ steps.build.outputs.image }}
