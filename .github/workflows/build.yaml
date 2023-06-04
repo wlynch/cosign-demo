@@ -19,4 +19,4 @@ jobs:
         run: |
           IMAGE=$(ko build)
           echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
-      - run: cosign sign ${{ steps.build.outputs.image }}
+      - run: cosign sign -y ${{ steps.build.outputs.image }}
